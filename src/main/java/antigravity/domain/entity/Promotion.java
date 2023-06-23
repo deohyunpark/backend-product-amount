@@ -1,13 +1,20 @@
 package antigravity.domain.entity;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
-@Data
+@Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Entity
 public class Promotion {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String promotion_type; //쿠폰 타입 (쿠폰, 코드)
     private String name;

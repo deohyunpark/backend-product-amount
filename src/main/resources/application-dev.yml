@@ -8,6 +8,15 @@ spring:
     password:
     driverClassName: org.h2.Driver
 
+#Jpa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
   # H2 Settings
   h2:
     console:
