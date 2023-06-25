@@ -17,7 +17,7 @@ public class ProductController {
 
     private final ProductService service;
 
-    //상품 가격 추출 api
+//    상품 가격 추출 api
     @GetMapping("/amount")
     public ResponseEntity<ProductAmountResponse> getProductAmount() {
 
@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     private ProductInfoRequest getParam() {
-        int[] couponIds = {1, 2};
+        int[] couponIds = {1,2};
 
         ProductInfoRequest request = ProductInfoRequest.builder()
                 .productId(1)
