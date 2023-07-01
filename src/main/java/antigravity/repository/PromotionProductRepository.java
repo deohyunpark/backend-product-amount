@@ -2,7 +2,6 @@ package antigravity.repository;
 
 import antigravity.domain.PromotionDTO;
 import antigravity.domain.entity.*;
-import com.querydsl.core.types.Operation;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -14,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static antigravity.domain.entity.QProduct.product;
 import static antigravity.domain.entity.QPromotion.*;
 import static antigravity.domain.entity.QPromotionProducts.promotionProducts;
 
@@ -44,13 +42,13 @@ public class PromotionProductRepository {
 
 
 
-    public Optional<PromotionDTO> findServiceAblePromotion(Integer productId, Integer promoId, Date today) {
+    public Optional<List<PromotionDTO>> findServiceAblePromotion(Integer productId, Integer[] promoId, Date today) {
         return Optional.ofNullable(queryFactory.select(Projections.fields(PromotionDTO.class, promotion.id, promotion.promotion_type,promotion.name, promotion.discount_type, promotion.discount_value))
                 .from(promotion)
-                .join(promotion).fetchJoin()
+                .join(promotionProducts).fetchJoin()
                 .on(eqProduct(productId))
-                .where(isValid(promoId, today))
-                .fetchOne());
+                .where(promotion.id.in(promoId).and(isDateBetween(today)))
+                .fetch());
 
     }
     // request 의 product 와 일치하는 product

@@ -46,19 +46,15 @@ public class ProductService {
 
         // request 의 쿠폰
         int[] couponIds = request.getCouponIds();
-
+        Integer[] couponList = Arrays.stream(couponIds).boxed().toArray(Integer[]::new);
         List<PromotionDTO> availPromoList = new ArrayList<>();
 
         // 오늘 날짜
         Date today = new Date();
 
-        for ( int coupon : couponIds) {
-            log.info("사용가능한 쿠폰 조회( 해당 상품에 사용가능한지 / 쿠폰 날짜가 맞는지 확인 )");
-            log.info(String.format("쿠폰 No.%s 확인", coupon));
-            PromotionDTO availPromo = promotionProductRepository.findServiceAblePromotion(product.getId(), coupon, today).orElseThrow(() ->
-                    new AntiGravityApplicationException(ErrorCode.COUPON_IS_NOT_AVAILABLE, String.format("%s is not available coupon", coupon)));
-            availPromoList.add(availPromo);
-        }
+        log.info("사용가능한 쿠폰 조회( 해당 상품에 사용가능한지 / 쿠폰 날짜가 맞는지 확인 )");
+        List<PromotionDTO> availPromo = promotionProductRepository.findServiceAblePromotion(product.getId(), couponList, today).orElseThrow(() ->
+                new AntiGravityApplicationException(ErrorCode.COUPON_IS_NOT_AVAILABLE));
 
         // 상품 원가격
         int OriginPrice = product.getPrice();
@@ -71,7 +67,7 @@ public class ProductService {
         // 2. 쿠폰의 갯수 (기존 가격에서 하나만 적용될때와 적용된 가격에서 또 적용될때 확인 필요)
         // n개의 쿠폰이 있다면 n번을 돌면서 가격변동이 계속 일어남
 
-        for (PromotionDTO p : availPromoList) {
+        for (PromotionDTO p : availPromo) {
             if (!TypeCheck(p)) {
                 totalPrice = TypeCoupon(OriginPrice, p.getDiscount_value());
             } else {
